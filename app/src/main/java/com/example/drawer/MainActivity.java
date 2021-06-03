@@ -49,14 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull @NotNull NavController controller, @NonNull @NotNull NavDestination destination, @Nullable @org.jetbrains.annotations.Nullable Bundle arguments) {
-                if (destination.getId() == R.id.formFragment){
-                    binding.appBarMain.fab.hide();
-                }else {
-                    binding.appBarMain.fab.show();
-                }
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.formFragment){
+                binding.appBarMain.fab.hide();
+                binding.appBarMain.toolbar.setVisibility(View.GONE);
+            }else {
+                binding.appBarMain.fab.show();
+                binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
             }
         });
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -73,13 +72,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return true;
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
