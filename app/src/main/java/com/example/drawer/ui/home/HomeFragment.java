@@ -1,5 +1,7 @@
 package com.example.drawer.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,8 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -30,22 +34,31 @@ import com.example.drawer.adapters.NoteAdapter;
 import com.example.drawer.databinding.FragmentHomeBinding;
 import com.example.drawer.interfaces.OnItemClickListener;
 import com.example.drawer.models.NoteModel;
+import com.example.drawer.unit.Preference;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnItemClickListener {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
+    ArrayList<NoteModel> filteredList;
+
+
+    FormFragment formFragment;
+    public static boolean isList = true;
+    //    ArrayList<NoteModel> list;
+    OnItemClickListener listener;
     NavigationView navigationView;
-    private ArrayList<NoteModel> list = new ArrayList<>();
-    NavController navController;
-    NoteModel model;
-    NoteAdapter adapter;
+
+    NoteAdapter adapter = new NoteAdapter();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +67,16 @@ public class HomeFragment extends Fragment {
 
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+//        Preference.init(requireContext());
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("your subtitle");
+        View root = binding.getRoot();
+        initRecycler();
+        addTextListener();
+        return root;
+    }
+
+
+    private void addTextListener() {
         binding.searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -62,47 +85,73 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.cancelTimer();
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                adapter.searchNotes(s.toString());
+                filter(s.toString());
+
             }
         });
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("your subtitle");
-        View root = binding.getRoot();
-        initRecycler();
-        return root;
+    }
+
+    private void filter(String text) {
+        ArrayList<NoteModel> newList = new ArrayList<>();
+        for (NoteModel item : adapter.list) {
+            if (item.getTitle().contains(text)){
+                newList.add(item);
+            }
+        }
+        adapter.filterList(newList);
     }
 
 
     private void initRecycler() {
-        binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        adapter = new NoteAdapter();
-//        adapter.setListener(new OnItemClickListener() {
-//            @Override
-//            public void setOnItemClickListener(int position, ArrayList<NoteModel> list) {
-//                String title = list.get(position).getTitle();
-//                String desc =list.get(position).getDescription();
-//                model = new NoteModel(title,desc);
-//                Bundle bundle = new Bundle();
-//                 bundle.putSerializable("model", model);
-////                bundle.putSerializable("position", position);
-//                getParentFragmentManager().setFragmentResult("key", bundle);
-//
-//            }
-//        });
+        if (!isList) {
+            binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        } else {
+            binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
         binding.rv.setAdapter(adapter);
-        getParentFragmentManager().setFragmentResultListener("model", getViewLifecycleOwner(), new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull @NotNull String requestKey, @NonNull @NotNull Bundle result) {
-                NoteModel model = (NoteModel) result.getSerializable("keyModel");
-                adapter.addNotes(model);
-            }
+        getParentFragmentManager().setFragmentResultListener("import", getViewLifecycleOwner(), (requestKey, result) -> {
+            NoteModel model = (NoteModel) result.getSerializable("keyTitle");
+            adapter.addNotes(model,HomeFragment.this);
+        });
+        getParentFragmentManager().setFragmentResultListener("edit", getViewLifecycleOwner(), (requestKey, result) -> {
+            NoteModel model = (NoteModel) result.getSerializable("keyTitle");
+            adapter.editModel(model, result.getInt("position"));
+
         });
     }
 
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        if (item.getItemId() == R.id.action_dashboard) {
+            if (isList) {
+                item.setIcon(R.drawable.ic_baseline_format_list_bulleted_24);
+                binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                isList = false;
+            } else {
+                item.setIcon(R.drawable.dashboard);
+                binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                isList = true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onDestroyView() {
@@ -110,4 +159,18 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+
+    @Override
+    public void onItemClick(int pisition, NoteModel model) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("mod", model);
+        bundle.putSerializable("position", pisition);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+        navController.navigate(R.id.action_nav_home_to_formFragment, bundle);
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
 }

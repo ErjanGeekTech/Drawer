@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         binding.appBarMain.fab.setOnClickListener(view -> {
-
-
             navController.navigate(R.id.action_nav_home_to_formFragment);
         });
     }
@@ -74,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
 
     @Override

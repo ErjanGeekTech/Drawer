@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/rear_fon"
+    android:background="@color/black_note"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FormFragment">
@@ -10,7 +10,7 @@
     <Toolbar
         android:id="@+id/toolbar_form"
         android:visibility="visible"
-        android:background="#191818"
+        android:background="#0E0C0C"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -74,20 +74,36 @@
         android:backgroundTint="@color/rear_fon"
         android:layout_height="wrap_content"/>
 
-    <EditText
-        android:textColor="@color/txt_shrift"
-        android:id="@+id/et_description"
-        android:hint="Enter description"
-        android:textSize="14sp"
+    <Button
+        android:id="@+id/btn_black"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_title"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/rear_fon"
-        android:textColorHint="@color/txt_shrift"
-        android:layout_marginHorizontal="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_marginLeft="34dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/btn_black"
+        android:layout_width="80dp"
+        android:layout_height="45dp"/>
+
+    <Button
+        android:id="@+id/btn_yellow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/btn_black"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/btn_yellow"
+        android:layout_width="80dp"
+        android:layout_height="45dp"/>
+
+    <Button
+        android:id="@+id/btn_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/btn_yellow"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/btn_red"
+        android:layout_width="80dp"
+        android:layout_height="45dp"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

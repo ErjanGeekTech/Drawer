@@ -14,4 +14,11 @@
     <color name="txt_shrift">#B1B1B1</color>
     <color name="color_fab">#E3A73B</color>
     <color name="color_day">#E5E5E5</color>
+    <color name="color_status_bar">#131212</color>
+    <color name="yellow_white">#EBE4C9</color>
+    <color name="black_red">#571818</color>
+    <color name="black_note">#0E0C0C</color>
+    <color name="mruchny_color">#505050</color>
+    <color name="DADADA_color">#DADADA</color>
+
 </resources>

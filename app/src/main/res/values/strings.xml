@@ -7,9 +7,11 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Готово</string>
 
-    <string name="menu_home">Заметки</string>
-    <string name="menu_gallery">Сult</string>
-    <string name="menu_slideshow">enemies</string>
+    <string name="menu_home">Поделиться</string>
+    <string name="menu_gallery">Настройки</string>
+    <string name="menu_slideshow">О разработчиках</string>
+    <string name="menu_power">Выход</string>
+
     <string name="ready">Готово</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
