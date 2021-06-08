@@ -1,5 +1,7 @@
-package com.example.drawer;
+package com.example.drawer.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.drawer.R;
 import com.example.drawer.databinding.FragmentFormBinding;
 import com.example.drawer.databinding.FragmentHomeBinding;
 import com.example.drawer.interfaces.OnItemClickListener;
@@ -176,4 +180,23 @@ public class FormFragment extends Fragment {
         btnYellow = view.findViewById(R.id.btn_yellow);
         btnRed = view.findViewById(R.id.btn_red);
     }
+
+//    @Override
+//    public void onAttach(@NonNull @NotNull Context context) {
+//        super.onAttach(context);
+//        showKeyBoard(true);
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        showKeyBoard(false);
+//    }
+//
+//    private void showKeyBoard(boolean showKeyBoard) {
+//        final Activity activity = getActivity();
+//        final InputMethodManager manager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        manager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),showKeyBoard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
+//    }
+
 }

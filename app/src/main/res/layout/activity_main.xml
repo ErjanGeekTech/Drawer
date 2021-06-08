@@ -20,7 +20,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemIconPadding="12dp"
-
         app:itemTextColor="@color/txt_shrift"
         app:itemIconTint="@color/DADADA_color"
         android:background="#131010"

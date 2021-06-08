@@ -37,6 +37,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public void editModel(NoteModel model, int position) {
         list.get(position).setTitle(model.getTitle());
+        list.add(model);
         notifyItemChanged(position);
     }
 

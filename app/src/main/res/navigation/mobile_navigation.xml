@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/formFragment"
-        android:name="com.example.drawer.FormFragment"
+        android:name="com.example.drawer.fragments.FormFragment"
         android:label="fragment_form"
         tools:layout="@layout/fragment_form" />
 </navigation>

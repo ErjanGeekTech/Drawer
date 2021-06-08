@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activitys.OnBoardActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_onboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:lottie_rawRes="@raw/guy"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="37dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginBottom="269dp"
+        android:layout_width="287dp"
+        android:layout_height="264dp"/>
+
+    <TextView
+        android:id="@+id/txt_start"
+        android:text="Начать работу"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="477dp"
+        android:layout_marginLeft="119dp"
+        android:layout_marginRight="111dp"
+        android:layout_marginBottom="139dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="normal"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textColor="@color/start_with_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+       android:id="@+id/txt_skip"
+        android:text="Пропустить"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="19dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="normal"
+        android:textSize="15sp"
+        android:visibility="visible"
+        android:textColor="@color/backround_ready"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_indicator"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tabIndicatorColor="@color/rear_fon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="547dp"
+        android:layout_marginLeft="174dp"
+        android:layout_marginRight="174dp"
+        android:layout_marginBottom="82dp"
+        app:tabBackground="@drawable/indecator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
