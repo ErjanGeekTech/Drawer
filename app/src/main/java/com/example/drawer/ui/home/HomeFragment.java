@@ -1,7 +1,9 @@
 package com.example.drawer.ui.home;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +24,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.drawer.activitys.MainActivity;
 import com.example.drawer.fragments.FormFragment;
 import com.example.drawer.R;
 import com.example.drawer.adapters.NoteAdapter;
@@ -160,6 +163,20 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
 
     @Override
     public void onItemLongClick(int position) {
-
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+        dialog.setTitle("Внимание!");
+        dialog.setMessage("Вы действительно хотите удалить");
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapter.delete(position);
+            }
+        });
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
     }
 }

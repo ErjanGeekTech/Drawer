@@ -85,6 +85,8 @@ LottieAnimationView lottie;
             @Override
             public void onPageSelected(int position) {
                 if (position == 2){
+                    lottie.setAnimation(R.raw.pro);
+                    lottie.playAnimation();
                     txtSkip.setVisibility(View.GONE);
                     txtStart.setVisibility(View.VISIBLE);
                 }else {
@@ -94,11 +96,8 @@ LottieAnimationView lottie;
 
                 if (position == 1){
                     lottie.setAnimation(R.raw.tapping);
-                    lottie.playAnimation();
-                }else  if(position == 2){
-                    lottie.setAnimation(R.raw.pro);
-                    lottie.playAnimation();
-                }else if (position == 0){
+                    lottie.playAnimation();}
+                else if (position == 0){
                     lottie.setAnimation(R.raw.guy);
                     lottie.playAnimation();
                 }

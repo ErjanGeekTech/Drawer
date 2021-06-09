@@ -1,6 +1,8 @@
 package com.example.drawer.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
@@ -58,8 +60,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @Override
     public void onBindViewHolder(@NonNull @NotNull NoteViewHolder holder, int position) {
         holder.bind(list.get(position));
+    }
 
-
+    public void delete(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -88,6 +93,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         public void bind(NoteModel noteModel) {
             itemView.setOnClickListener(v -> {
                 listener.onItemClick(getAdapterPosition(), noteModel);
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onItemLongClick(getAdapterPosition());
+                    return false;
+                }
             });
             txtTitle.setText(noteModel.getTitle());
             if (noteModel.getBackground() != null) {
