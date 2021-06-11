@@ -37,6 +37,7 @@ import com.example.drawer.databinding.FragmentFormBinding;
 import com.example.drawer.databinding.FragmentHomeBinding;
 import com.example.drawer.interfaces.OnItemClickListener;
 import com.example.drawer.models.NoteModel;
+import com.example.drawer.ui.home.HomeFragment;
 import com.example.drawer.unit.Preference;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,18 +51,11 @@ public class FormFragment extends Fragment {
     private EditText etTitle;
     private FragmentFormBinding binding;
     TextView txtReady, txtDayMonth, txtTime;
-    OnItemClickListener click;
     private String title;
     private boolean isEdit = false;
     String background;
     Button btnBlack, btnYellow, btnRed;
-
     int pos;
-    public void setClick(OnItemClickListener click) {
-        this.click = click;
-    }
-
-    SharedPreferences preferences;
     String time;
     NavController navController;
 
@@ -146,23 +140,32 @@ public class FormFragment extends Fragment {
                 if (etTitle.getText().toString().isEmpty()) {
                     etTitle.setError("Please enter title");
                 } else  if (isEdit){
-                    SimpleDateFormat sdfTime = new SimpleDateFormat("dd.MM/HH:mm");
-                    time = sdfTime.format(new Date());
+//                    if (!HomeFragment.isList) {
+//                        SimpleDateFormat sdfTime = new SimpleDateFormat("d MMMM HH:mm");
+//                        time = sdfTime.format(new Date());
+//                    }else {
+//                        SimpleDateFormat sdfTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                        time = HomeFragment.sdfTime.format(new Date());
+//                    }
                     title = etTitle.getText().toString();
-                    model = new NoteModel(title, background);
+                    model = new NoteModel(title, background, time);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("keyTitle", model);
                     bundle.putInt("position", pos);
                     getParentFragmentManager().setFragmentResult("edit", bundle);
                     navController.navigateUp();
                 }else {
-                    SimpleDateFormat sdfTime = new SimpleDateFormat("dd.MM/HH:mm");
+                    SimpleDateFormat sdfTime;
+                    if (!HomeFragment.isList) {
+                         sdfTime = new SimpleDateFormat("d MMMM HH:mm");
+                    }else {
+                         sdfTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                    }
                     time = sdfTime.format(new Date());
                     title = etTitle.getText().toString();
-                    model = new NoteModel(title, background);
+                    model = new NoteModel(title, background , time);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("keyTitle", model);
-//                    bundle.putString("background", background);
                     getParentFragmentManager().setFragmentResult("import", bundle);
                     navController.navigateUp();
                 }
@@ -180,23 +183,5 @@ public class FormFragment extends Fragment {
         btnYellow = view.findViewById(R.id.btn_yellow);
         btnRed = view.findViewById(R.id.btn_red);
     }
-
-//    @Override
-//    public void onAttach(@NonNull @NotNull Context context) {
-//        super.onAttach(context);
-//        showKeyBoard(true);
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        showKeyBoard(false);
-//    }
-//
-//    private void showKeyBoard(boolean showKeyBoard) {
-//        final Activity activity = getActivity();
-//        final InputMethodManager manager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-//        manager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),showKeyBoard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
-//    }
 
 }

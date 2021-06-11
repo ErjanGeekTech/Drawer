@@ -1,16 +1,24 @@
 package com.example.drawer.models;
 
-import java.io.Serializable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+@Entity
 public class NoteModel implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     String title;
-    String description;
+    String date;
     String background;
 
-    public NoteModel(String title, String background) {
+    public NoteModel(String title, String background, String date) {
         this.title = title;
         this.background = background;
+        this.date = date;
     }
+
+
     public  NoteModel(){}
 
     public String getBackground() {
@@ -21,14 +29,16 @@ public class NoteModel implements Serializable {
         this.background = background;
     }
 
-    String date;
 
-    public NoteModel(String title) {
-        this.title = title;
-        this.date = date;
+
+    public NoteModel(String date) {
+        this.date= date;
+//        this.date = date;
     }
 
-
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getTitle() {
         return title;
@@ -41,5 +51,13 @@ public class NoteModel implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -23,5 +23,7 @@
     <color name="item_color_text">#F3F3F3</color>
     <color name="start_with_activity">#8E8B8B</color>
     <color name="point_grey">#C4C4C4</color>
+    <color name="data">#616161</color>
+
 
 </resources>

@@ -6,20 +6,36 @@
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@color/rear_fon"
     app:cardCornerRadius="16dp"
+    android:layout_margin="8dp"
+    app:cardElevation="3dp"
     android:layout_height="wrap_content">
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
+        android:text="Title"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/item_txt_title"
-        android:layout_marginStart="8dp"
-        android:layout_margin="10dp"
         android:includeFontPadding="false"
         android:textStyle="bold"
         android:textColor="@color/txt_shrift"
-        android:textSize="13sp"
+        android:textSize="15sp"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/item_txt_date"
+        android:text="31 мая 12:45"
+        android:textColor="@color/data"
+        android:textStyle="bold"
+        android:textSize="10sp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_txt_title"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

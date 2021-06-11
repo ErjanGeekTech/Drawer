@@ -1,6 +1,9 @@
 package com.example.drawer.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -14,6 +17,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.drawer.R;
 import com.example.drawer.adapters.OnBoardAdapter;
 import com.example.drawer.models.OnBoardModel;
+import com.example.drawer.ui.home.HomeFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -45,6 +50,7 @@ LottieAnimationView lottie;
         if (showOnBoard) {
             Intent intent = new Intent(OnBoardActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -54,9 +60,14 @@ LottieAnimationView lottie;
             startActivity(intent);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(OnBoardActivity.this);
             preferences.edit().putBoolean("showOnBoard" , true).apply();
+            finish();
         });
         txtSkip.setOnClickListener(v -> {
-            pager.setCurrentItem(pager.getCurrentItem() + 1);
+            Intent intent = new Intent(OnBoardActivity.this, MainActivity.class);
+            startActivity(intent);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(OnBoardActivity.this);
+            preferences.edit().putBoolean("showOnBoard" , true).apply();
+            finish();
         });
 
     }

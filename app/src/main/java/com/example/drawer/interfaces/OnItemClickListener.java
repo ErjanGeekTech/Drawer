@@ -8,6 +8,6 @@ import com.example.drawer.models.NoteModel;
 import java.util.ArrayList;
 
 public interface OnItemClickListener {
-    void onItemClick(int pisition , NoteModel model);
+    void onItemClick(int position , NoteModel model);
     void onItemLongClick(int position);
 }

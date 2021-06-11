@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -23,24 +25,38 @@ import com.example.drawer.ui.home.HomeFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
+import java.util.logging.Handler;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    public ArrayList<NoteModel> list = new ArrayList<>();
+    public List<NoteModel> list = new ArrayList<>();
+    public List<NoteModel> listSourse = new ArrayList<>();
 
     private OnItemClickListener listener;
+    public boolean random = false;
+
+
 
     public void addNotes(NoteModel model, OnItemClickListener listener) {
         this.listener = listener;
         list.add(model);
+        listSourse = list;
         notifyDataSetChanged();
     }
 
     public void editModel(NoteModel model, int position) {
         list.get(position).setTitle(model.getTitle());
-        list.add(model);
+        list.get(position).setBackground(model.getBackground());
+        list.get(position).setDate(model.getDate());
         notifyItemChanged(position);
+    }
+    public void addListOfModel(List<NoteModel> listM){
+        list.clear();
+        this.list.addAll(listM);
+        notifyDataSetChanged();
+
     }
 
 
@@ -49,10 +65,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view;
-        if (HomeFragment.isList) {
+        if (!HomeFragment.isList) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dashboard_note, parent, false);
+            random = false;
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_note, parent, false);
+            random = true;
+
         }
         return new NoteViewHolder(view);
     }
@@ -80,19 +99,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtTitle;
-        LinearLayout linearLayout;
+        TextView txtTitle, txtDate;
 
         public NoteViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.item_txt_title);
-            linearLayout = itemView.findViewById(R.id.layoutNote);
+            txtDate = itemView.findViewById(R.id.item_txt_date);
         }
 
         @SuppressLint("ResourceAsColor")
         public void bind(NoteModel noteModel) {
             itemView.setOnClickListener(v -> {
-                listener.onItemClick(getAdapterPosition(), noteModel);
+                listener.onItemClick(getAdapterPosition(),noteModel);
             });
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -102,6 +120,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 }
             });
             txtTitle.setText(noteModel.getTitle());
+            txtDate.setText(noteModel.getDate());
             if (noteModel.getBackground() != null) {
                 switch (noteModel.getBackground()) {
                     case "black":
@@ -110,10 +129,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                         break;
                     case "yellow":
                         txtTitle.setTextColor(Color.parseColor("#A1865E"));
+                        txtDate.setTextColor(Color.parseColor("#C0B18B"));
                         itemView.setBackgroundResource(R.drawable.btn_yellow);
                         break;
                     case "red":
                         txtTitle.setTextColor(Color.parseColor("#EAA72E"));
+                        txtDate.setTextColor(Color.parseColor("#A16801"));
                         itemView.setBackgroundResource(R.drawable.btn_red);
                         break;
                 }
@@ -122,8 +143,16 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         }
     }
 
-    public void filterList(ArrayList<NoteModel> filteredList) {
-        list = filteredList;
+
+
+
+    public void filterList(List<NoteModel> filteredList) {
+            list = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public void listEmpty() {
+        list = listSourse;
         notifyDataSetChanged();
     }
 

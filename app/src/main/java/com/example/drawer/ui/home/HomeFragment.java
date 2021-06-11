@@ -5,8 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,10 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -31,41 +37,56 @@ import com.example.drawer.adapters.NoteAdapter;
 import com.example.drawer.databinding.FragmentHomeBinding;
 import com.example.drawer.interfaces.OnItemClickListener;
 import com.example.drawer.models.NoteModel;
+import com.example.drawer.unit.App;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements OnItemClickListener {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
-    ArrayList<NoteModel> filteredList;
-
-
-    FormFragment formFragment;
+    public static SimpleDateFormat sdfTime;
     public static boolean isList = true;
-    //    ArrayList<NoteModel> list;
-    OnItemClickListener listener;
-    NavigationView navigationView;
 
     NoteAdapter adapter = new NoteAdapter();
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-//        Preference.init(requireContext());
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("your subtitle");
         View root = binding.getRoot();
+        Log.e("TAG", "onCreateView: " + App.getInstance(requireContext()).getTaskDao().getAll());
+        setAdapter();
         initRecycler();
+        getDataForm();
         addTextListener();
         return root;
     }
+
+
+
+
+    private void getDataForm() {
+        if (App.getInstance(requireContext()).getTaskDao().getAll() != null){
+                adapter.addListOfModel(App.getInstance(requireContext()).getTaskDao().getAll());
+        }
+    }
+
 
 
     private void addTextListener() {
@@ -83,45 +104,55 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
             @Override
             public void afterTextChanged(Editable s) {
                 filter(s.toString());
-
             }
         });
     }
 
+
+
+
     private void filter(String text) {
-        ArrayList<NoteModel> newList = new ArrayList<>();
+
+        List<NoteModel> newList = new ArrayList<>();
         for (NoteModel item : adapter.list) {
-            if (item.getTitle().contains(text)){
+            if (item.getTitle().contains(text)) {
                 newList.add(item);
             }
         }
-        adapter.filterList(newList);
+        if (binding.searchEt.getText().toString().isEmpty()) {
+            adapter.listEmpty();
+        } else {
+            adapter.filterList(newList);
+        }
+
+
     }
 
+public void setAdapter(){
+    binding.rv.setAdapter(adapter);
+    binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+}
 
     private void initRecycler() {
-        if (!isList) {
-            binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        } else {
-            binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        }
-        binding.rv.setAdapter(adapter);
+
         getParentFragmentManager().setFragmentResultListener("import", getViewLifecycleOwner(), (requestKey, result) -> {
             NoteModel model = (NoteModel) result.getSerializable("keyTitle");
-            adapter.addNotes(model,HomeFragment.this);
+            if (model != null) {
+                if (!isList) {
+                    binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                } else {
+                    binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
+                adapter.addNotes(model, HomeFragment.this);
+                App.getInstance(requireContext()).getTaskDao().insertAll(model);
+            }
         });
         getParentFragmentManager().setFragmentResultListener("edit", getViewLifecycleOwner(), (requestKey, result) -> {
             NoteModel model = (NoteModel) result.getSerializable("keyTitle");
             adapter.editModel(model, result.getInt("position"));
-
         });
     }
 
-    @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
@@ -178,5 +209,7 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
                 dialog.dismiss();
             }
         });
+        dialog.show();
     }
+
 }
