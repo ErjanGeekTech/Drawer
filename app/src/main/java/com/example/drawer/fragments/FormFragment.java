@@ -2,43 +2,31 @@ package com.example.drawer.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.drawer.R;
 import com.example.drawer.databinding.FragmentFormBinding;
-import com.example.drawer.databinding.FragmentHomeBinding;
-import com.example.drawer.interfaces.OnItemClickListener;
 import com.example.drawer.models.NoteModel;
-import com.example.drawer.ui.home.HomeFragment;
-import com.example.drawer.unit.Preference;
+import com.example.drawer.unit.App;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,11 +45,14 @@ public class FormFragment extends Fragment {
     Button btnBlack, btnYellow, btnRed;
     int pos;
     String time;
+    RadioGroup radioGroup;
     NavController navController;
+    RadioButton radio_black, radio_yellow, radio_red;
+    NoteModel mod;
 
 
 
-    NoteModel model = new NoteModel();
+    NoteModel model;
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -76,8 +67,12 @@ public class FormFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_form, container, false);
         binding = FragmentFormBinding.inflate(inflater, container, false);
+        radioGroup = view.findViewById(R.id.radios);
+        view.findViewById(R.id.radio_black).setOnClickListener(this::initRadio);
+        view.findViewById(R.id.radio_yellow).setOnClickListener(this::initRadio);
+        view.findViewById(R.id.radio_red).setOnClickListener(this::initRadio);
         initView(view);
-        getData();
+        getModel();
         iniButtons();
         initClickListener(view);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
@@ -103,6 +98,9 @@ public class FormFragment extends Fragment {
 
     private void iniButtons() {
         btnBlack.setOnClickListener(v -> {
+            radio_black.performClick();
+            radio_yellow.setChecked(false);
+            radio_red.setChecked(false);
             background = "black";
             YoYo.with(Techniques.Shake)
                     .duration(100)
@@ -110,6 +108,9 @@ public class FormFragment extends Fragment {
                     .playOn(v.findViewById(R.id.btn_black));
         });
         btnYellow.setOnClickListener(v -> {
+            radio_yellow.performClick();
+            radio_black.setChecked(false);
+            radio_red.setChecked(false);
             background = "yellow";
             YoYo.with(Techniques.Shake)
                     .duration(100)
@@ -117,6 +118,9 @@ public class FormFragment extends Fragment {
                     .playOn(v.findViewById(R.id.btn_yellow));
         });
         btnRed.setOnClickListener(v -> {
+            radio_red.performClick();
+            radio_black.setChecked(false);
+            radio_yellow.setChecked(false);
             background = "red";
             YoYo.with(Techniques.Shake)
                     .duration(100)
@@ -124,13 +128,24 @@ public class FormFragment extends Fragment {
                     .playOn(v.findViewById(R.id.btn_red));
         });
     }
+        private void initRadio(View view) {
+//         Получаем нажатый переключатель
+        switch(view.getId()) {
+            case R.id.radio_black:
+            case R.id.radio_yellow:
+            case R.id.radio_red:
+                radioGroup.clearCheck();
+                radioGroup.check(view.getId());
+                break;
+        }
+    }
 
-    private void getData() {
+    private void getModel() {
         if (getArguments() != null) {
-            model = (NoteModel) getArguments().getSerializable("mod");
-            etTitle.setText(model.getTitle());
-            pos = getArguments().getInt("position");
-            isEdit = true;
+           mod = (NoteModel) getArguments().getSerializable("mod");
+           if (mod != null) {
+               etTitle.setText(mod.getTitle());
+           }
         }
     }
 
@@ -139,38 +154,29 @@ public class FormFragment extends Fragment {
             txtReady.setOnClickListener(v -> {
                 if (etTitle.getText().toString().isEmpty()) {
                     etTitle.setError("Please enter title");
-                } else  if (isEdit){
-//                    if (!HomeFragment.isList) {
-//                        SimpleDateFormat sdfTime = new SimpleDateFormat("d MMMM HH:mm");
-//                        time = sdfTime.format(new Date());
-//                    }else {
-//                        SimpleDateFormat sdfTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        time = HomeFragment.sdfTime.format(new Date());
-//                    }
-                    title = etTitle.getText().toString();
-                    model = new NoteModel(title, background, time);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("keyTitle", model);
-                    bundle.putInt("position", pos);
-                    getParentFragmentManager().setFragmentResult("edit", bundle);
-                    navController.navigateUp();
                 }else {
-                    SimpleDateFormat sdfTime;
-                    if (!HomeFragment.isList) {
-                         sdfTime = new SimpleDateFormat("d MMMM HH:mm");
-                    }else {
-                         sdfTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                    }
+                       SimpleDateFormat  sdfTime = new SimpleDateFormat("d MMMM HH:mm");
                     time = sdfTime.format(new Date());
                     title = etTitle.getText().toString();
                     model = new NoteModel(title, background , time);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("keyTitle", model);
+                    if (mod == null){
+                        App.getInstance().getTaskDao().insertAll(model);
+                        bundle.putSerializable("model", model);
+                    }else {
+                        mod.setTitle(title);
+                        App.getInstance().getTaskDao().update(mod);
+                        bundle.putSerializable("updateMod", mod);
+                    }
                     getParentFragmentManager().setFragmentResult("import", bundle);
-                    navController.navigateUp();
+                    close();
                 }
             });
 
+    }
+
+    private void close() {
+        navController.navigateUp();
     }
 
 
@@ -182,6 +188,11 @@ public class FormFragment extends Fragment {
         btnBlack = view.findViewById(R.id.btn_black);
         btnYellow = view.findViewById(R.id.btn_yellow);
         btnRed = view.findViewById(R.id.btn_red);
+        radio_black = view.findViewById(R.id.radio_black);
+        radio_yellow = view.findViewById(R.id.radio_yellow);
+        radio_red = view.findViewById(R.id.radio_red);
     }
 
 }
+
+

@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -31,32 +32,35 @@ import java.util.logging.Handler;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    public List<NoteModel> list = new ArrayList<>();
+    public List<NoteModel> list ;
     public List<NoteModel> listSourse = new ArrayList<>();
 
     private OnItemClickListener listener;
-    public boolean random = false;
 
 
+    public NoteAdapter(boolean isList, OnItemClickListener listener) {
+        this.list = new ArrayList<>();
+        this.listener = listener;
+    }
 
     public void addNotes(NoteModel model, OnItemClickListener listener) {
         this.listener = listener;
-        list.add(model);
+        list.add(0, model);
         listSourse = list;
-        notifyDataSetChanged();
+        notifyItemChanged(list.lastIndexOf(0));
+
     }
 
     public void editModel(NoteModel model, int position) {
-        list.get(position).setTitle(model.getTitle());
-        list.get(position).setBackground(model.getBackground());
-        list.get(position).setDate(model.getDate());
+        list.set(position, model);
+//        list.get(position).setBackground(model.getBackground());
+//        list.get(position).setDate(model.getDate());
         notifyItemChanged(position);
     }
     public void addListOfModel(List<NoteModel> listM){
         list.clear();
-        this.list.addAll(listM);
+        list = listM;
         notifyDataSetChanged();
-
     }
 
 
@@ -67,11 +71,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         View view;
         if (!HomeFragment.isList) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dashboard_note, parent, false);
-            random = false;
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_note, parent, false);
-            random = true;
-
         }
         return new NoteViewHolder(view);
     }
@@ -83,7 +84,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public void delete(int position) {
         list.remove(position);
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -112,10 +113,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             itemView.setOnClickListener(v -> {
                 listener.onItemClick(getAdapterPosition(),noteModel);
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            itemView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    listener.onItemLongClick(getAdapterPosition());
+                public boolean onTouch(View v, MotionEvent event) {
+                    listener.onDeleteSwipe(noteModel);
                     return false;
                 }
             });
@@ -125,6 +126,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 switch (noteModel.getBackground()) {
                     case "black":
                         txtTitle.setTextColor(Color.parseColor("#B1B1B1"));
+                        txtDate.setTextColor(Color.parseColor("#616161"));
                         itemView.setBackgroundResource(R.drawable.btn_black);
                         break;
                     case "yellow":

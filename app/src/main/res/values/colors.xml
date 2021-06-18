@@ -7,11 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="btn_color_code">#D88B02</color>
     <color name="et_search">#333333</color>
     <color name="grey">#cccccc</color>
     <color name="backround_ready">#E3A73B</color>
     <color name="rear_fon">#191818</color>
     <color name="txt_shrift">#B1B1B1</color>
+    <color name="bledny">#80B1B1B1</color>
     <color name="color_fab">#E3A73B</color>
     <color name="color_day">#E5E5E5</color>
     <color name="color_status_bar">#131212</color>
@@ -24,6 +26,7 @@
     <color name="start_with_activity">#8E8B8B</color>
     <color name="point_grey">#C4C4C4</color>
     <color name="data">#616161</color>
+    <color name="registracia">#8E8B8B</color>
 
 
 </resources>

@@ -9,5 +9,5 @@ import java.util.ArrayList;
 
 public interface OnItemClickListener {
     void onItemClick(int position , NoteModel model);
-    void onItemLongClick(int position);
+    void onDeleteSwipe(NoteModel model);
 }

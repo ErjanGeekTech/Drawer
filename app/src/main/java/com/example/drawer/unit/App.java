@@ -14,15 +14,13 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = Room.databaseBuilder(this, AppDatabase.class, "task-database")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
 
     }
-    public static AppDatabase getInstance(Context context){
-        if (instance == null) {
-            instance = Room.databaseBuilder(context, AppDatabase.class, "task-database")
-                    .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
-                    .build();
-        }
+    public static AppDatabase getInstance(){
         return  instance;
     };
 }

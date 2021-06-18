@@ -27,7 +27,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.drawer.activitys.MainActivity;
@@ -50,16 +52,21 @@ import java.util.List;
 public class HomeFragment extends Fragment implements OnItemClickListener {
 
     private HomeViewModel homeViewModel;
-    private FragmentHomeBinding binding;
+    public static FragmentHomeBinding binding;
     public static SimpleDateFormat sdfTime;
     public static boolean isList = true;
+    NoteModel noteModel;
+    public int positionM;
 
-    NoteAdapter adapter = new NoteAdapter();
+    List<NoteModel> list;
+
+    NoteAdapter adapter;
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        adapter = new NoteAdapter(isList, HomeFragment.this);
 
     }
 
@@ -70,10 +77,9 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        Log.e("TAG", "onCreateView: " + App.getInstance(requireContext()).getTaskDao().getAll());
         setAdapter();
-        initRecycler();
         getDataForm();
+        initRecycler();
         addTextListener();
         return root;
     }
@@ -81,11 +87,19 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
 
 
 
+
     private void getDataForm() {
-        if (App.getInstance(requireContext()).getTaskDao().getAll() != null){
-                adapter.addListOfModel(App.getInstance(requireContext()).getTaskDao().getAll());
-        }
+        App.getInstance().getTaskDao().getAll().observe(getViewLifecycleOwner(), new Observer<List<NoteModel>>() {
+            @Override
+            public void onChanged(List<NoteModel> noteModels) {
+                list = noteModels;
+                adapter.addListOfModel(noteModels);
+
+            }
+        });
+
     }
+
 
 
 
@@ -134,24 +148,23 @@ public void setAdapter(){
 }
 
     private void initRecycler() {
-
         getParentFragmentManager().setFragmentResultListener("import", getViewLifecycleOwner(), (requestKey, result) -> {
-            NoteModel model = (NoteModel) result.getSerializable("keyTitle");
-            if (model != null) {
+            NoteModel model = (NoteModel) result.getSerializable("model");
+            NoteModel updateModel = (NoteModel) result.getSerializable("updateModel");
                 if (!isList) {
                     binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                 } else {
                     binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
                 }
-                adapter.addNotes(model, HomeFragment.this);
-                App.getInstance(requireContext()).getTaskDao().insertAll(model);
-            }
-        });
-        getParentFragmentManager().setFragmentResultListener("edit", getViewLifecycleOwner(), (requestKey, result) -> {
-            NoteModel model = (NoteModel) result.getSerializable("keyTitle");
-            adapter.editModel(model, result.getInt("position"));
+                if (model != null){
+                    adapter.addNotes(model, HomeFragment.this);
+                }else {
+                    adapter.editModel(updateModel, positionM);
+                }
         });
     }
+
+
 
 
     @Override
@@ -174,6 +187,7 @@ public void setAdapter(){
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        getDataForm();
     }
 
     @Override
@@ -186,30 +200,26 @@ public void setAdapter(){
     @Override
     public void onItemClick(int pisition, NoteModel model) {
         Bundle bundle = new Bundle();
+        positionM = pisition;
         bundle.putSerializable("mod", model);
-        bundle.putSerializable("position", pisition);
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
         navController.navigate(R.id.action_nav_home_to_formFragment, bundle);
     }
 
     @Override
-    public void onItemLongClick(int position) {
-        AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
-        dialog.setTitle("Внимание!");
-        dialog.setMessage("Вы действительно хотите удалить");
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Да", new DialogInterface.OnClickListener() {
+    public void onDeleteSwipe(NoteModel model) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                adapter.delete(position);
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
             }
-        });
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Нет", new DialogInterface.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                App.getInstance().getTaskDao().delete(model);
+                adapter.delete(viewHolder.getAdapterPosition());
             }
-        });
-        dialog.show();
+        }).attachToRecyclerView(binding.rv);
     }
 
 }

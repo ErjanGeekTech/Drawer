@@ -2,6 +2,7 @@ package com.example.drawer.unit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 public class Preference {
     public static final String STORAGE_NAME = "StorageName";
@@ -27,7 +28,7 @@ public class Preference {
         editor.apply();
     }
 
-    public static String getProperty( String name ){
+    public static String getProperty(String name ){
         if( settings == null ){
             init();
         }

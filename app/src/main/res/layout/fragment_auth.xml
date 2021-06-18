@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/rear_fon"
+    tools:context=".fragments.AuthFragment">
+
+    <ImageView
+        android:id="@+id/logo_jpg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="125dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginRight="120dp"
+        android:background="@drawable/notes"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_nuber_registr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:text="Регистрация по номеру"
+        android:textColor="@color/registracia"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo_jpg" />
+
+    <EditText
+        android:id="@+id/et_number"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/backround_edit"
+        android:drawableStart="@drawable/mask"
+        android:drawablePadding="13dp"
+        android:hint="+996 707 777 777"
+        android:paddingStart="18dp"
+        android:textColorHint="@color/txt_shrift"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_nuber_registr" />
+
+    <EditText
+        android:id="@+id/et_code"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/backround_edit"
+        android:drawableStart="@drawable/shape"
+        android:drawablePadding="13dp"
+        android:hint="Ваш код"
+        android:paddingStart="21dp"
+        android:textColorHint="@color/bledny"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_number" />
+
+    <Button
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/btn_get_code"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_code"
+        android:layout_marginLeft="82dp"
+        android:layout_marginRight="78dp"
+        android:text="Получить код"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:background="@drawable/btn_backround_code"
+        android:layout_marginTop="30dp"
+        android:layout_width="200dp"
+        android:layout_height="45dp"/>
+
+    <Button
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/btn_continio"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_code"
+        android:layout_marginLeft="82dp"
+        android:layout_marginRight="78dp"
+        android:text="Подтвердить"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:background="@drawable/btn_backround_code"
+        android:layout_marginTop="30dp"
+        android:layout_width="200dp"
+        android:layout_height="45dp"/>
+
+    <TextView
+        android:text="Отправить снова"
+        android:id="@+id/txt_send"
+        app:layout_constraintTop_toBottomOf="@id/btn_get_code"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/btn_color_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
