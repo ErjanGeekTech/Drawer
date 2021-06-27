@@ -37,6 +37,7 @@
             android:id="@+id/item_txt_date"
             android:text="05.05.21 12:45"
             android:gravity="center"
+            android:textSize="14dp"
             android:textColor="@color/data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

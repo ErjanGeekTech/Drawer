@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.formFragment) {
+            if (destination.getId() == R.id.formFragment || destination.getId() == R.id.authFragment
+                    || destination.getId() == R.id.nav_gallery|| destination.getId() == R.id.nav_slideshow) {
                 binding.appBarMain.fab.hide();
                 binding.appBarMain.toolbar.setVisibility(View.GONE);
             } else {

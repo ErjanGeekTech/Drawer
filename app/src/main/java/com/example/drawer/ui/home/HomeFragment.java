@@ -53,12 +53,10 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
 
     private HomeViewModel homeViewModel;
     public static FragmentHomeBinding binding;
-    public static SimpleDateFormat sdfTime;
     public static boolean isList = true;
-    NoteModel noteModel;
     public int positionM;
+   public static List <NoteModel> search = new ArrayList<>();
 
-    List<NoteModel> list;
 
     NoteAdapter adapter;
 
@@ -79,28 +77,21 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
         View root = binding.getRoot();
         setAdapter();
         getDataForm();
-        initRecycler();
         addTextListener();
         return root;
     }
-
-
-
 
 
     private void getDataForm() {
         App.getInstance().getTaskDao().getAll().observe(getViewLifecycleOwner(), new Observer<List<NoteModel>>() {
             @Override
             public void onChanged(List<NoteModel> noteModels) {
-                list = noteModels;
+                search = noteModels;
                 adapter.addListOfModel(noteModels);
-
             }
         });
 
     }
-
-
 
 
     private void addTextListener() {
@@ -112,17 +103,15 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                filter(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+
             }
         });
     }
-
-
 
 
     private void filter(String text) {
@@ -138,30 +127,27 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
         } else {
             adapter.filterList(newList);
         }
-
-
     }
 
-public void setAdapter(){
-    binding.rv.setAdapter(adapter);
-    binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-}
+    public void setAdapter() {
+        if (!isList){
+            binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        }else {
+            binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+        binding.rv.setAdapter(adapter);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-    private void initRecycler() {
-        getParentFragmentManager().setFragmentResultListener("import", getViewLifecycleOwner(), (requestKey, result) -> {
-            NoteModel model = (NoteModel) result.getSerializable("model");
-            NoteModel updateModel = (NoteModel) result.getSerializable("updateModel");
-                if (!isList) {
-                    binding.rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                } else {
-                    binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                }
-                if (model != null){
-                    adapter.addNotes(model, HomeFragment.this);
-                }else {
-                    adapter.editModel(updateModel, positionM);
-                }
-        });
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                App.getInstance().getTaskDao().delete(adapter.list.get(viewHolder.getAdapterPosition()));
+                adapter.delete(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(binding.rv);
     }
 
 
@@ -184,7 +170,8 @@ public void setAdapter(){
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater
+            inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
         getDataForm();
@@ -206,20 +193,5 @@ public void setAdapter(){
         navController.navigate(R.id.action_nav_home_to_formFragment, bundle);
     }
 
-    @Override
-    public void onDeleteSwipe(NoteModel model) {
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-                App.getInstance().getTaskDao().delete(model);
-                adapter.delete(viewHolder.getAdapterPosition());
-            }
-        }).attachToRecyclerView(binding.rv);
-    }
 
 }

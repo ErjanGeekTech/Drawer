@@ -9,5 +9,4 @@ import java.util.ArrayList;
 
 public interface OnItemClickListener {
     void onItemClick(int position , NoteModel model);
-    void onDeleteSwipe(NoteModel model);
 }

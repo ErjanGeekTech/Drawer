@@ -10,6 +10,7 @@
     <color name="btn_color_code">#D88B02</color>
     <color name="et_search">#333333</color>
     <color name="grey">#cccccc</color>
+    <color name="grey_dark_color">#777575</color>
     <color name="backround_ready">#E3A73B</color>
     <color name="rear_fon">#191818</color>
     <color name="txt_shrift">#B1B1B1</color>

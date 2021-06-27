@@ -40,7 +40,6 @@ public class FormFragment extends Fragment {
     private FragmentFormBinding binding;
     TextView txtReady, txtDayMonth, txtTime;
     private String title;
-    private boolean isEdit = false;
     String background;
     Button btnBlack, btnYellow, btnRed;
     int pos;
@@ -49,7 +48,6 @@ public class FormFragment extends Fragment {
     NavController navController;
     RadioButton radio_black, radio_yellow, radio_red;
     NoteModel mod;
-
 
 
     NoteModel model;
@@ -128,9 +126,9 @@ public class FormFragment extends Fragment {
                     .playOn(v.findViewById(R.id.btn_red));
         });
     }
-        private void initRadio(View view) {
-//         Получаем нажатый переключатель
-        switch(view.getId()) {
+
+    private void initRadio(View view) {
+        switch (view.getId()) {
             case R.id.radio_black:
             case R.id.radio_yellow:
             case R.id.radio_red:
@@ -142,43 +140,40 @@ public class FormFragment extends Fragment {
 
     private void getModel() {
         if (getArguments() != null) {
-           mod = (NoteModel) getArguments().getSerializable("mod");
-           if (mod != null) {
-               etTitle.setText(mod.getTitle());
-           }
+            mod = (NoteModel) getArguments().getSerializable("mod");
+            if (mod != null) {
+                etTitle.setText(mod.getTitle());
+            }
         }
     }
 
     private void initClickListener(View view) {
 
-            txtReady.setOnClickListener(v -> {
-                if (etTitle.getText().toString().isEmpty()) {
-                    etTitle.setError("Please enter title");
-                }else {
-                       SimpleDateFormat  sdfTime = new SimpleDateFormat("d MMMM HH:mm");
-                    time = sdfTime.format(new Date());
-                    title = etTitle.getText().toString();
-                    model = new NoteModel(title, background , time);
-                    Bundle bundle = new Bundle();
-                    if (mod == null){
-                        App.getInstance().getTaskDao().insertAll(model);
-                        bundle.putSerializable("model", model);
-                    }else {
-                        mod.setTitle(title);
-                        App.getInstance().getTaskDao().update(mod);
-                        bundle.putSerializable("updateMod", mod);
-                    }
-                    getParentFragmentManager().setFragmentResult("import", bundle);
-                    close();
+        txtReady.setOnClickListener(v -> {
+            if (etTitle.getText().toString().isEmpty()) {
+                etTitle.setError("Please enter title");
+            } else {
+                SimpleDateFormat sdfTime = new SimpleDateFormat("d MMMM HH:mm");
+                time = sdfTime.format(new Date());
+                title = etTitle.getText().toString();
+                model = new NoteModel(title, background, time);
+                if (mod == null) {
+                    App.getInstance().getTaskDao().insertAll(model);
+                } else {
+                    mod.setTitle(etTitle.getText().toString());
+                    mod.setDate(time);
+                    mod.setBackground(background);
+                    App.getInstance().getTaskDao().update(mod);
                 }
-            });
+                close();
+            }
+        });
 
     }
 
     private void close() {
         navController.navigateUp();
     }
-
 
     private void initView(View view) {
         etTitle = view.findViewById(R.id.et_title);

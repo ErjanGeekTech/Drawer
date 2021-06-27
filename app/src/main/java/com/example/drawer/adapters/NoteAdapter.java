@@ -22,6 +22,7 @@ import com.example.drawer.R;
 import com.example.drawer.interfaces.OnItemClickListener;
 import com.example.drawer.models.NoteModel;
 import com.example.drawer.ui.home.HomeFragment;
+import com.example.drawer.unit.App;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ import java.util.logging.Handler;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    public List<NoteModel> list ;
+    public List<NoteModel> list;
     public List<NoteModel> listSourse = new ArrayList<>();
 
     private OnItemClickListener listener;
@@ -43,23 +44,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         this.listener = listener;
     }
 
-    public void addNotes(NoteModel model, OnItemClickListener listener) {
-        this.listener = listener;
-        list.add(0, model);
-        listSourse = list;
-        notifyItemChanged(list.lastIndexOf(0));
 
-    }
-
-    public void editModel(NoteModel model, int position) {
-        list.set(position, model);
-//        list.get(position).setBackground(model.getBackground());
-//        list.get(position).setDate(model.getDate());
-        notifyItemChanged(position);
-    }
-    public void addListOfModel(List<NoteModel> listM){
+    public void addListOfModel(List<NoteModel> listM) {
         list.clear();
-        list = listM;
+        list.addAll(listM);
         notifyDataSetChanged();
     }
 
@@ -111,14 +99,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         @SuppressLint("ResourceAsColor")
         public void bind(NoteModel noteModel) {
             itemView.setOnClickListener(v -> {
-                listener.onItemClick(getAdapterPosition(),noteModel);
-            });
-            itemView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    listener.onDeleteSwipe(noteModel);
-                    return false;
-                }
+                listener.onItemClick(getAdapterPosition(), noteModel);
             });
             txtTitle.setText(noteModel.getTitle());
             txtDate.setText(noteModel.getDate());
@@ -146,15 +127,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
 
-
-
     public void filterList(List<NoteModel> filteredList) {
-            list = filteredList;
+        list = filteredList;
         notifyDataSetChanged();
     }
 
     public void listEmpty() {
-        list = listSourse;
+        list = HomeFragment.search;
         notifyDataSetChanged();
     }
 

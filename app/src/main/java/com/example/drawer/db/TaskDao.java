@@ -24,4 +24,6 @@ public interface TaskDao {
 
     @Update
     void update(NoteModel model);
+//    @Delete
+//    void remove (NoteModel noteModel);
 }

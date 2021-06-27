@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class AuthFragment extends Fragment {
 
     private FragmentAuthBinding binding;
-
+    private String phone;
     private  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private String mVerificationId;
     private FirebaseAuth mAuth;
@@ -110,6 +110,7 @@ public class AuthFragment extends Fragment {
     private void init() {
         binding.btnGetCode.setOnClickListener(v -> {
             privatePhone();
+
             binding.btnGetCode.setVisibility(View.GONE);
             binding.btnContinio.setVisibility(View.VISIBLE);
         });
@@ -130,8 +131,8 @@ public class AuthFragment extends Fragment {
     }
 
     private void privatePhone() {
-        String phone ="+996" + binding.etNumber.getText().toString().trim();
-    if (TextUtils.isEmpty(phone) || phone.length() > 8){
+         phone = "+996"+ binding.etNumber.getText().toString().trim();
+    if (TextUtils.isEmpty(phone) && phone.length() > 8){
         binding.etNumber.setError("Input number correct!");
         return;
     }

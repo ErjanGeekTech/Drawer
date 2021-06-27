@@ -94,9 +94,7 @@
                 android:background="@drawable/btn_black"
                 android:layout_width="80dp"
                 android:layout_height="45dp"/>
-
-
-
+            
             <Button
                 android:id="@+id/btn_yellow"
                 app:layout_constraintBottom_toBottomOf="parent"

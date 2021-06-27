@@ -18,7 +18,6 @@ public class App extends Application {
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
-
     }
     public static AppDatabase getInstance(){
         return  instance;
