@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,7 +36,6 @@ import java.util.logging.Handler;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
     public List<NoteModel> list;
-    public List<NoteModel> listSourse = new ArrayList<>();
 
     private OnItemClickListener listener;
 
@@ -85,6 +86,43 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     public int getItemViewType(int position) {
         return position;
     }
+
+//    @Override
+//    public Filter getFilter() {
+//        return filter;
+//    }
+
+//    Filter filter = new Filter() {
+//        @Override
+//        protected FilterResults performFiltering(CharSequence constraint) {
+//            String charString = constraint.toString();
+//            if (charString.isEmpty()) {
+//                HomeFragment.search = list;
+//            } else {
+//                List<NoteModel> filteredList = new ArrayList<>();
+//                for (NoteModel row : list) {
+//
+//                    // name match condition. this might differ depending on your requirement
+//                    // here we are looking for name or phone number match
+//                    if (row.getTitle().toLowerCase().contains(charString.toLowerCase())) {
+//                        filteredList.add(row);
+//                    }
+//                }
+//
+//                HomeFragment.search = filteredList;
+//            }
+//
+//            FilterResults filterResults = new FilterResults();
+//            filterResults.values = HomeFragment.search;
+//            return filterResults;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence constraint, FilterResults results) {
+//            list = (ArrayList<NoteModel>) results.values;
+//            notifyDataSetChanged();
+//        }
+//    };
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
 

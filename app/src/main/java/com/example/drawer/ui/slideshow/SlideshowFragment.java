@@ -1,6 +1,8 @@
 package com.example.drawer.ui.slideshow;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,14 +16,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.drawer.adapters.SlideshowAdapter;
 import com.example.drawer.databinding.FragmentSlideshowBinding;
+import com.example.drawer.models.SlideshowModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.InputStream;
 import java.util.UUID;
 
 public class SlideshowFragment extends Fragment {
@@ -30,7 +37,7 @@ public class SlideshowFragment extends Fragment {
     private FragmentSlideshowBinding binding;
     FirebaseStorage storage;
     StorageReference storageReference;
-
+    SlideshowAdapter adapter;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         slideshowViewModel =
@@ -39,10 +46,35 @@ public class SlideshowFragment extends Fragment {
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         storage = FirebaseStorage.getInstance();
+        setAdapter();
         getStrage();
+        getImage();
         return root;
     }
 
+    private void setAdapter() {
+        binding.rvS.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvS.setAdapter(adapter);
+    }
+
+    private void getImage() {
+        StorageReference reference = storage.getReference()
+                .child("images/");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        reference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0 , bytes.length);
+                adapter.addImage(new SlideshowModel(bitmap));
+                // Data for "images/island.jpg" is returns, use this as needed
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
 
 
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -60,7 +92,7 @@ public class SlideshowFragment extends Fragment {
     }
 
     private void uploadImage(Uri filePath) {
-         storageReference = storage.getReference();
+        storageReference = storage.getReference();
         if (filePath != null) {
 
             // Code for showing progressDialog while uploading

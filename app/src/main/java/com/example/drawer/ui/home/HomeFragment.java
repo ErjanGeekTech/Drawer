@@ -117,8 +117,8 @@ public class HomeFragment extends Fragment implements OnItemClickListener {
     private void filter(String text) {
 
         List<NoteModel> newList = new ArrayList<>();
-        for (NoteModel item : adapter.list) {
-            if (item.getTitle().contains(text)) {
+        for (NoteModel item : search) {
+            if (item.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 newList.add(item);
             }
         }

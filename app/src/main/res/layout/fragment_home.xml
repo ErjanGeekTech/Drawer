@@ -16,6 +16,7 @@
         android:drawablePadding="10dp"
         android:textColorHint="@color/grey"
         android:paddingStart="18dp"
+        android:textColor="@color/white"
         android:padding="12dp"
         android:textSize="15sp"
         android:drawableStart="@drawable/search"

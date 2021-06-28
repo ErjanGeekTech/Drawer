@@ -120,9 +120,9 @@ public class AuthFragment extends Fragment {
     }
 
     private void checkCodeSms() {
-        String smsCode = binding.etCode.getText().toString().trim();
+        String smsCode =  binding.etCode.getText().toString().trim();
         if (TextUtils.isEmpty(smsCode) || smsCode.length() > 6){
-            binding.etNumber.setError("Input sms correct code!");
+            binding.etCode.setError("Input sms correct code!");
             return;
         }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode);
@@ -131,7 +131,7 @@ public class AuthFragment extends Fragment {
     }
 
     private void privatePhone() {
-         phone = "+996"+ binding.etNumber.getText().toString().trim();
+         phone = "+996" + binding.etNumber.getText().toString().trim();
     if (TextUtils.isEmpty(phone) && phone.length() > 8){
         binding.etNumber.setError("Input number correct!");
         return;
